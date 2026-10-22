@@ -51,7 +51,13 @@ sudo docker compose version
 
 Confirmar que `rev-parse HEAD` coincide con el SHA esperado en APP y DATA antes de iniciar contenedores. El script instala Docker desde Amazon Linux 2023 y Docker Compose v5.6.0 según la [instalación oficial](https://docs.docker.com/compose/install/linux/); no inicia contenedores ni formatea discos. Este procedimiento no se ha ejecutado en AWS.
 
-En DATA, antes de iniciar PostgreSQL, identificar el EBS adicional por ID y verificar con `lsblk -f` y `sudo blkid` si contiene un sistema de archivos. El formateo de un volumen existente destruye datos; hacerlo solo si se confirma que el volumen correcto está vacío. Montar en `/srv/finops/postgres` usando UUID en `/etc/fstab`, según la [guía de EBS](https://docs.aws.amazon.com/ebs/latest/userguide/ebs-using-volumes.html), y verificar el montaje tras reiniciar.
+En DATA, antes de iniciar PostgreSQL, identificar el EBS adicional por ID y verificar con `lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINT,SERIAL` y `sudo blkid` si contiene un sistema de archivos. El formateo de un volumen existente destruye datos; hacerlo solo si se confirma que el volumen correcto está vacío. Montar en `/srv/finops/postgres` usando UUID en `/etc/fstab`, según la [guía de EBS](https://docs.aws.amazon.com/ebs/latest/userguide/ebs-using-volumes.html), y verificar el montaje tras reiniciar. **Solo después de confirmar el montaje**, crear la subcarpeta de datos:
+
+```bash
+sudo mountpoint -q /srv/finops/postgres && sudo mkdir -p /srv/finops/postgres/data
+```
+
+El Compose de DATA exige que esta subcarpeta ya exista y no la crea automáticamente; así evita iniciar PostgreSQL sobre una carpeta nueva del disco raíz si falta el EBS. Verificar `mountpoint -q /srv/finops/postgres` antes de cada arranque manual de PostgreSQL.
 
 El volumen gp3 cifrado adicional se adjunta a DATA, pero **Terraform no lo formatea ni monta**. No usar el nombre NVMe como identificador persistente.
 

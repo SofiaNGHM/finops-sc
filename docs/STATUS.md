@@ -14,7 +14,7 @@ La infraestructura está definida, no desplegada. Los tres interruptores de Terr
 |---|---|---|
 | VPC, cuatro subredes y rutas | PARCIAL | Definición en `infra/network.tf`; `terraform validate` local correcto, sin despliegue. |
 | APP y DATA privadas | PARCIAL | Definición de dos EC2 sin IP pública; falta instalación y verificación operativa. |
-| EBS cifrado para PostgreSQL | PARCIAL | Volumen y attachment definidos; montaje persistente pendiente. |
+| EBS cifrado para PostgreSQL | PARCIAL | Volumen y attachment definidos; montaje persistente pendiente. El Compose de DATA exige una subcarpeta creada después del montaje y no crea automáticamente la ruta de origen. Falta verificarlo en EC2. |
 | SSM privado | BLOQUEADO | Requiere NAT temporal o endpoints; no hay conectividad desplegada. |
 | Docker APP/DATA | PARCIAL | Compose separados y configuración estructural validada. La imagen API se construyó y PostgreSQL, API y Grafana arrancaron localmente. Se añadió un instalador manual de Docker/Compose para Amazon Linux 2023; no se ejecutó en EC2. La transferencia prevista usa el mismo commit de un repositorio Git público en ambas instancias; falta publicarlo y probar el clonado. |
 | Inventario EC2/EBS/snapshots/EIP | PARCIAL | API de solo lectura; sin prueba contra AWS. |
