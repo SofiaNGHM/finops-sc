@@ -1,0 +1,11 @@
+aws_region = "us-east-2"
+# SAFE DEFAULT: terraform plan produces zero resources
+# Set enable_network=true ONLY when approved to provision networking.
+enable_network = false
+# WARNING: NAT Gateway + EIP incur hourly charges. Keep false until demo.
+enable_nat = false
+# Requires enable_network=true AND enable_nat=true in this lab architecture.
+enable_compute = false
+instance_type = "t3.micro"
+root_volume_gb = 12
+data_volume_gb = 8

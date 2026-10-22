@@ -1,0 +1,38 @@
+# Secretos y configuración local
+.env
+**/.env
+.env.*
+**/.env.*
+!.env.example
+!**/.env.example
+!**/.env.*.example
+*.env
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+*.tfplan
+.terraform/
+.aws/
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Archivos locales y paquetes temporales
+.vscode/
+infra-plan*.zip
+deploy/checkout-public-repo-al2023.sh
+crash.log
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+graphify-out/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
