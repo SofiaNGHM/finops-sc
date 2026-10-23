@@ -16,14 +16,14 @@ La infraestructura está definida, no desplegada. Los tres interruptores de Terr
 | APP y DATA privadas | PARCIAL | Definición de dos EC2 sin IP pública; falta instalación y verificación operativa. |
 | EBS cifrado para PostgreSQL | PARCIAL | Volumen y attachment definidos; montaje persistente pendiente. El Compose de DATA exige una subcarpeta creada después del montaje y no crea automáticamente la ruta de origen. Falta verificarlo en EC2. |
 | SSM privado | BLOQUEADO | Requiere NAT temporal o endpoints; no hay conectividad desplegada. |
-| Docker APP/DATA | PARCIAL | Compose separados y configuración estructural validada. La imagen API se construyó y PostgreSQL, API y Grafana arrancaron localmente. Se añadió un instalador manual de Docker/Compose para Amazon Linux 2023; no se ejecutó en EC2. La transferencia prevista usa el mismo commit de un repositorio Git público en ambas instancias; falta publicarlo y probar el clonado. |
+| Docker APP/DATA | PARCIAL | Compose separados y configuración estructural validada. La imagen API se construyó y PostgreSQL, API y Grafana arrancaron localmente. Se añadió un instalador manual de Docker/Compose para Amazon Linux 2023; no se ejecutó en EC2. El repositorio Git público ya existe; falta probar el clonado e instalación en ambas instancias. |
 | Inventario EC2/EBS/snapshots/EIP | PARCIAL | API de solo lectura; sin prueba contra AWS. |
 | Detección de huérfanos | PARCIAL | Volúmenes libres, snapshots antiguos e IPs sin asociación; sin prueba AWS. |
 | Scheduler EC2 | PARCIAL | Vista previa sin ejecución ni proceso periódico. |
 | Rightsizing | PARCIAL | Recomendación CPU con CloudWatch, sin cambio de tamaño. |
-| Costos antes/después | PENDIENTE | Tabla y panel vacíos; faltan observaciones o escenarios etiquetados. |
+| Costos antes/después | PARCIAL | Script de escenario hipotético con cálculo explícito y escritura optativa en PostgreSQL; dashboard con comparación y serie de estimaciones. Pruebas unitarias del cálculo: 3 correctas. No hay tarifas vigentes verificadas, filas registradas en AWS ni costos reales consultados. |
 | CPU, memoria, red y latencia | PENDIENTE | Solo CPU para rightsizing. Memoria requiere agente; no se inventan datos. |
-| Auditoría de operaciones | PARCIAL | Tabla `audit_events` creada en PostgreSQL local; falta insertar eventos desde la API. |
+| Auditoría de operaciones | PARCIAL | Tabla `audit_events` creada en PostgreSQL local; el script de escenarios escribe un evento al registrar una estimación. Falta auditoría de llamadas de la API y ejecución de acciones. |
 | Seguridad y segmentación | PARCIAL | SG DATA permite 5432 solo desde APP. APP y DATA usan perfiles IAM separados; DATA tiene únicamente la política administrada básica de SSM. Falta verificar los permisos reales tras desplegar. |
 | Resiliencia y escalabilidad | PENDIENTE | Se documentará como propuesta; no hay balanceador ni Auto Scaling. |
 

@@ -1,18 +1,26 @@
 {
   "uid": "finops-lab",
-  "title": "FinOps Lab | datos registrados",
+  "title": "FinOps Lab | estimaciones hipotéticas y auditoría",
   "schemaVersion": 40,
   "version": 1,
   "refresh": "30s",
   "time": {"from": "now-7d", "to": "now"},
   "panels": [
     {
+      "id": 3,
+      "type": "table",
+      "title": "Último escenario hipotético: antes y después (USD estimado, no factura AWS)",
+      "datasource": {"type": "postgres", "uid": "finops-postgres"},
+      "targets": [{"refId": "A", "format": "table", "rawQuery": true, "rawSql": "WITH latest AS (SELECT resource_id, recorded_at FROM cost_scenarios WHERE source = 'estimate' ORDER BY recorded_at DESC, id DESC LIMIT 1) SELECT c.scenario AS escenario, c.resource_id AS recurso_hipotetico, c.hours AS horas, c.hourly_usd AS tarifa_usd_h, round(c.hourly_usd * c.hours, 4) AS costo_estimado_usd FROM cost_scenarios c JOIN latest l ON c.resource_id = l.resource_id AND c.recorded_at = l.recorded_at WHERE c.source = 'estimate' ORDER BY CASE WHEN c.scenario = 'antes' THEN 0 ELSE 1 END"}],
+      "gridPos": {"x": 0, "y": 0, "w": 24, "h": 7}
+    },
+    {
       "id": 1,
       "type": "timeseries",
-      "title": "Costo registrado por escenario (USD estimado)",
+      "title": "Historial de escenarios hipotéticos (USD estimado)",
       "datasource": {"type": "postgres", "uid": "finops-postgres"},
       "targets": [{"refId": "A", "format": "time_series", "rawQuery": true, "rawSql": "SELECT recorded_at AS time, scenario AS metric, sum(hourly_usd * hours)::double precision AS value FROM cost_scenarios WHERE source = 'estimate' AND $__timeFilter(recorded_at) GROUP BY 1, 2 ORDER BY 1"}],
-      "gridPos": {"x": 0, "y": 0, "w": 24, "h": 9}
+      "gridPos": {"x": 0, "y": 7, "w": 24, "h": 9}
     },
     {
       "id": 2,
@@ -20,7 +28,7 @@
       "title": "Auditoría de operaciones",
       "datasource": {"type": "postgres", "uid": "finops-postgres"},
       "targets": [{"refId": "A", "format": "table", "rawQuery": true, "rawSql": "SELECT occurred_at, action, resource_id, mode, result FROM audit_events WHERE $__timeFilter(occurred_at) ORDER BY occurred_at DESC LIMIT 100"}],
-      "gridPos": {"x": 0, "y": 9, "w": 24, "h": 9}
+      "gridPos": {"x": 0, "y": 16, "w": 24, "h": 9}
     }
   ]
 }

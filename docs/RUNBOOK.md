@@ -67,7 +67,15 @@ Crear `deploy/.env` solo en la instancia correspondiente, con permisos `0600`, a
 
 - La API expone inventario, posibles huérfanos, vista previa de horario y recomendaciones de tamaño, todos de solo lectura.
 - La vista previa del scheduler no ejecuta cambios. Las recomendaciones no redimensionan EC2.
-- El panel Grafana lee tablas inicialmente vacías. No muestra ahorros reales ni simulados hasta registrar datos identificados por origen.
+- El panel Grafana lee tablas inicialmente vacías. Para mostrar un caso académico, el script `src/record_estimate.py` calcula y, solo con `--write`, registra dos filas con `source=estimate` y un evento de auditoría. No consulta AWS ni representa facturas o ahorros observados.
+- Ejemplo **hipotético**: una EC2 con tarifa supuesta de USD 0,0104/h durante 720 horas frente a 240 horas. Se debe identificar y fechar la fuente de la tarifa al exponerlo; el número aquí solo sirve para probar el cálculo. Dentro de APP, después de verificar PostgreSQL y el despliegue del código:
+
+```bash
+cd /opt/finops
+sudo docker compose -f deploy/app.compose.yml exec api python -m src.record_estimate --resource-id hypothetical-demo-ec2 --hourly-usd 0.0104 --hours-before 720 --hours-after 240 --rate-source 'supuesto academico; verificar precio vigente antes de usar'
+```
+
+El comando anterior solo muestra el cálculo. Si se desean filas en PostgreSQL para Grafana, repetirlo con `--write` al final. La diferencia mostrada sería USD 4,992 **estimados para este supuesto**, sin incluir EBS, NAT, IPv4, transferencia, impuestos ni créditos; no equivale a ahorro logrado. El panel de comparación muestra la última pareja registrada y la auditoría registra los parámetros usados.
 - CPU procede de CloudWatch cuando existe; memoria requiere un agente o fuente adicional. No se inventan métricas.
 - APP y DATA no instalan Docker ni clonan el repositorio automáticamente. El procedimiento por Git público está documentado, pero no probado en EC2. No se considera listo para ejecutar en AWS sin verificar SSM, montaje, secretos y contenedores.
 
